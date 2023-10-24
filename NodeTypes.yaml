@@ -1,0 +1,15 @@
+# this node type must ALWAYS be defined (as it is required by the content repository core)
+# TODO: remove this workaround
+'Neos.ContentRepository:Root': {}
+
+
+# Your root node type must always extend from Neos.ContentRepository:Root
+MyProject:Root:
+  superTypes:
+    'Neos.ContentRepository:Root': true
+
+
+MyProject:Page:
+  properties:
+    title:
+      type: string

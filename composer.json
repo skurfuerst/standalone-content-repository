@@ -3,7 +3,10 @@
     "autoload": {
         "psr-4": {
             "App\\": "src/"
-        }
+        },
+        "files": [
+            "src/Workaround/FlowUtilityAlgorithms.php"
+        ]
     },
     "authors": [
         {
@@ -13,8 +16,9 @@
     ],
     "require": {
         "neos/contentrepository-core": "9.0.x-dev",
+        "neos/contentgraph-doctrinedbaladapter": "9.0.x-dev",
         "neos/eventstore": "dev-main",
         "neos/eventstore-doctrineadapter": "dev-main",
-        "neos/contentgraph-doctrinedbaladapter": "dev-main"
+        "symfony/yaml": "^6.3"
     }
 }

@@ -1,0 +1,25 @@
+# QUICK HELP:
+# "docker compose up -d" starts everything.
+# "docker compose down" stops everything, but keeps the data.
+# "docker compose down -v" stops everything, and REMOVES the data.
+version: '3.5'
+services:
+  mysql:
+    image: mariadb:10.8
+    environment:
+      MARIADB_USER: 'db'
+      MARIADB_PASSWORD: 'db'
+      MARIADB_DATABASE: 'db'
+      MARIADB_ROOT_PASSWORD: 'db'
+    volumes:
+      - mysql:/var/lib/mysql
+      - ./deployment/mariadb-initdb.d:/docker-entrypoint-initdb.d:cached
+
+    ports:
+      - 13306:3306
+    command: ['mysqld', '--character-set-server=utf8mb4', '--collation-server=utf8mb4_unicode_ci']
+
+volumes:
+  mysql:
+
+
