@@ -1,0 +1,20 @@
+{
+    "name": "skurfuerst/cr-standalone",
+    "autoload": {
+        "psr-4": {
+            "App\\": "src/"
+        }
+    },
+    "authors": [
+        {
+            "name": "Sebastian Kurfuerst",
+            "email": "sebastian.kurfuerst@sandstorm.de"
+        }
+    ],
+    "require": {
+        "neos/contentrepository-core": "9.0.x-dev",
+        "neos/eventstore": "dev-main",
+        "neos/eventstore-doctrineadapter": "dev-main",
+        "neos/contentgraph-doctrinedbaladapter": "dev-main"
+    }
+}
