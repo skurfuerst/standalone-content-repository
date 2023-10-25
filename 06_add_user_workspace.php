@@ -30,7 +30,7 @@ if ($userWorkspace) {
 }
 
 $contentRepository->handle(
-    new CreateWorkspace(
+    CreateWorkspace::create(
         workspaceName: $userWorkspaceName,
         baseWorkspaceName: WorkspaceName::fromString('live'),
         workspaceTitle: WorkspaceTitle::fromString('Sebastian'),

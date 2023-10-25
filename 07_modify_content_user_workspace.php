@@ -30,7 +30,7 @@ $userWorkspace = $contentRepository->getWorkspaceFinder()->findOneByName(
 );
 
 $contentRepository->handle(
-    new SetNodeProperties(
+    SetNodeProperties::create(
         contentStreamId: $userWorkspace->currentContentStreamId,
         nodeAggregateId: NodeAggregateId::fromString('d022c323-75e5-4628-9526-d6f085b7b662'),
         originDimensionSpacePoint: OriginDimensionSpacePoint::fromArray([]),
@@ -42,7 +42,7 @@ $contentRepository->handle(
 )->block();
 
 $contentRepository->handle(
-    new RemoveNodeAggregate(
+    RemoveNodeAggregate::create(
         contentStreamId: $userWorkspace->currentContentStreamId,
         nodeAggregateId: NodeAggregateId::fromString('1330cb65-5b57-4a10-9c53-1408b381eea7'),
         coveredDimensionSpacePoint: DimensionSpacePoint::fromArray([]),

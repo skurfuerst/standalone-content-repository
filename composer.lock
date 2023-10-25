@@ -708,12 +708,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/neos/contentgraph-doctrinedbaladapter.git",
-                "reference": "9a5b16677a746cfdcfbf5821d11fb6a1f422041a"
+                "reference": "a0889f8855b611f8e5460bdca98335145edaef57"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/neos/contentgraph-doctrinedbaladapter/zipball/9a5b16677a746cfdcfbf5821d11fb6a1f422041a",
-                "reference": "9a5b16677a746cfdcfbf5821d11fb6a1f422041a",
+                "url": "https://api.github.com/repos/neos/contentgraph-doctrinedbaladapter/zipball/a0889f8855b611f8e5460bdca98335145edaef57",
+                "reference": "a0889f8855b611f8e5460bdca98335145edaef57",
                 "shasum": ""
             },
             "require": {
@@ -734,7 +734,7 @@
             ],
             "description": "The Doctrine DBAL database backend for the Neos content graph",
             "support": {
-                "source": "https://github.com/neos/contentgraph-doctrinedbaladapter/tree/9.0"
+                "source": "https://github.com/neos/contentgraph-doctrinedbaladapter/tree/task/removeUnstructuredNodeType"
             },
             "funding": [
                 {
@@ -742,7 +742,7 @@
                     "type": "custom"
                 }
             ],
-            "time": "2023-08-29T20:33:23+00:00"
+            "time": "2023-10-25T09:36:35+00:00"
         },
         {
             "name": "neos/contentrepository-core",
@@ -750,12 +750,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/neos/contentrepository-core.git",
-                "reference": "c8f00939cadc2eee482ab958d3638438f4cbef0b"
+                "reference": "722d8b77c57d47a3771ac762a0887596538aecc1"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/neos/contentrepository-core/zipball/c8f00939cadc2eee482ab958d3638438f4cbef0b",
-                "reference": "c8f00939cadc2eee482ab958d3638438f4cbef0b",
+                "url": "https://api.github.com/repos/neos/contentrepository-core/zipball/722d8b77c57d47a3771ac762a0887596538aecc1",
+                "reference": "722d8b77c57d47a3771ac762a0887596538aecc1",
                 "shasum": ""
             },
             "require": {
@@ -768,6 +768,7 @@
                 "neos/utility-objecthandling": "*",
                 "php": "^8.2",
                 "psr/clock": "^1",
+                "ramsey/uuid": "^3.0 || ^4.0",
                 "symfony/serializer": "*"
             },
             "require-dev": {
@@ -792,7 +793,7 @@
             ],
             "description": "Content repository, specifically made for Neos, but also usable standalone.",
             "support": {
-                "source": "https://github.com/neos/contentrepository-core/tree/9.0"
+                "source": "https://github.com/neos/contentrepository-core/tree/task/removeUnstructuredNodeType"
             },
             "funding": [
                 {
@@ -800,7 +801,7 @@
                     "type": "custom"
                 }
             ],
-            "time": "2023-09-01T12:36:42+00:00"
+            "time": "2023-10-25T11:09:00+00:00"
         },
         {
             "name": "neos/error-messages",
@@ -808,12 +809,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/neos/error-messages.git",
-                "reference": "8c47f778c23f1a1ad68b62c4d6fdc6176c083b9e"
+                "reference": "842de4451f0685a21328607fde0c49f82e8b40f5"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/neos/error-messages/zipball/8c47f778c23f1a1ad68b62c4d6fdc6176c083b9e",
-                "reference": "8c47f778c23f1a1ad68b62c4d6fdc6176c083b9e",
+                "url": "https://api.github.com/repos/neos/error-messages/zipball/842de4451f0685a21328607fde0c49f82e8b40f5",
+                "reference": "842de4451f0685a21328607fde0c49f82e8b40f5",
                 "shasum": ""
             },
             "require": {
@@ -942,12 +943,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/neos/utility-arrays.git",
-                "reference": "f226ad4c9517b90de0db6868a79af6f8c17701fe"
+                "reference": "ce9aeb3028d20b2ca3168c574f26bfe1840ea6b3"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/neos/utility-arrays/zipball/f226ad4c9517b90de0db6868a79af6f8c17701fe",
-                "reference": "f226ad4c9517b90de0db6868a79af6f8c17701fe",
+                "url": "https://api.github.com/repos/neos/utility-arrays/zipball/ce9aeb3028d20b2ca3168c574f26bfe1840ea6b3",
+                "reference": "ce9aeb3028d20b2ca3168c574f26bfe1840ea6b3",
                 "shasum": ""
             },
             "require": {
@@ -992,12 +993,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/neos/utility-objecthandling.git",
-                "reference": "3f02adcc3f9a120538efeab472c4487744dff6ad"
+                "reference": "bf6ea4cfe8f0b3b907ae12651f28f94832ab3f32"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/neos/utility-objecthandling/zipball/3f02adcc3f9a120538efeab472c4487744dff6ad",
-                "reference": "3f02adcc3f9a120538efeab472c4487744dff6ad",
+                "url": "https://api.github.com/repos/neos/utility-objecthandling/zipball/bf6ea4cfe8f0b3b907ae12651f28f94832ab3f32",
+                "reference": "bf6ea4cfe8f0b3b907ae12651f28f94832ab3f32",
                 "shasum": ""
             },
             "require": {
@@ -2386,5 +2387,5 @@
     "prefer-lowest": false,
     "platform": [],
     "platform-dev": [],
-    "plugin-api-version": "2.3.0"
+    "plugin-api-version": "2.6.0"
 }
