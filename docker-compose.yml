@@ -16,7 +16,7 @@ services:
       - ./deployment/mariadb-initdb.d:/docker-entrypoint-initdb.d:cached
 
     ports:
-      - 13306:3306
+      - 23306:3306
     command: ['mysqld', '--character-set-server=utf8mb4', '--collation-server=utf8mb4_unicode_ci']
 
 volumes:

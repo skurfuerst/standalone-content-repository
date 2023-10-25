@@ -13,3 +13,10 @@ MyProject:Page:
   properties:
     title:
       type: string
+
+
+    creationDate:
+      type: \DateTimeImmutable
+
+    modificationDate:
+      type: \DateTimeImmutable
