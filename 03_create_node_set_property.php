@@ -20,7 +20,7 @@ $rootNodeId = App\Common::getRootNodeId();
 $nodeId1 = NodeAggregateId::create();
 
 $contentRepository->handle(
-    new CreateNodeAggregateWithNode(
+    CreateNodeAggregateWithNode::create(
         contentStreamId: $liveWorkspace->currentContentStreamId,
         nodeAggregateId: $nodeId1,
         nodeTypeName: NodeTypeName::fromString('MyProject:Page'),
@@ -37,7 +37,7 @@ echo "🟢 Inserted a page\n";
 
 
 $contentRepository->handle(
-    new SetNodeProperties(
+    SetNodeProperties::create(
         contentStreamId: $liveWorkspace->currentContentStreamId,
         nodeAggregateId: $nodeId1,
         originDimensionSpacePoint: OriginDimensionSpacePoint::fromArray([]),

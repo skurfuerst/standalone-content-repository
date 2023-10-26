@@ -18,7 +18,7 @@ $rootNodeId = App\Common::getRootNodeId();
 
 
 $contentRepository->handle(
-    new CreateNodeAggregateWithNode(
+    CreateNodeAggregateWithNode::create(
         contentStreamId: $liveWorkspace->currentContentStreamId,
         nodeAggregateId: NodeAggregateId::create(),
         nodeTypeName: NodeTypeName::fromString('MyProject:Page'),

@@ -31,7 +31,7 @@ $userWorkspace = $contentRepository->getWorkspaceFinder()->findOneByName(
 );
 
 $contentRepository->handle(
-    new PublishWorkspace(
+    PublishWorkspace::create(
         $userWorkspace->workspaceName
     )
 )->block();

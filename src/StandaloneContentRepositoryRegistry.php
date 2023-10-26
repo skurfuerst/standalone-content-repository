@@ -133,8 +133,7 @@ final class StandaloneContentRepositoryRegistry
     {
         return new NodeTypeManager(
             fn() => $this->nodeTypeConfiguration,
-            new DefaultNodeLabelGeneratorFactory(),
-            fallbackNodeTypeName: null,
+            new DefaultNodeLabelGeneratorFactory()
         );
     }
 
