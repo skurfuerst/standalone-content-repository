@@ -1,0 +1,13 @@
+parameters:
+    level: 8
+    paths:
+        - src
+        - 00_reset.php
+        - 01_setup.php
+        - 02_create_node.php
+        - 03_create_node_set_property.php
+        - 04_empty_projections.php
+        - 05_replay_projections.php
+        - 06_add_user_workspace.php
+        - 07_modify_content_user_workspace.php
+        - 08_publish_content.php

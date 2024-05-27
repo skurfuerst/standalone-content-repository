@@ -5,6 +5,9 @@
             "App\\": "src/"
         }
     },
+    "scripts": {
+        "lint:phpstan": "vendor/bin/phpstan analyse"
+    },
     "authors": [
         {
             "name": "Sebastian Kurfuerst",
@@ -17,5 +20,8 @@
         "neos/eventstore": "dev-main",
         "neos/eventstore-doctrineadapter": "dev-main",
         "symfony/yaml": "^6.3"
+    },
+    "require-dev": {
+        "phpstan/phpstan": "^1.11"
     }
 }
