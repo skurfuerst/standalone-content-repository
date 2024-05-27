@@ -40,7 +40,7 @@ class Common
             self::$registry = new \App\StandaloneContentRepositoryRegistry(
                 self::getConnection(),
                 dimensionConfiguration: [],
-                nodeTypeConfiguration: Yaml::parse(file_get_contents('NodeTypes.yaml')),
+                nodeTypeConfiguration: Yaml::parse(file_get_contents('NodeTypes.yaml') ?: throw new \RuntimeException('Failed to read NodeType schema.')),
                 additionalProjectionFactories: []
             );
 

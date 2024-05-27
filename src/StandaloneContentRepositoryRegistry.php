@@ -56,7 +56,11 @@ final class StandaloneContentRepositoryRegistry
 
     private DbalClientInterface $dbalClient;
 
-
+    /**
+     * @param array<mixed> $dimensionConfiguration
+     * @param array<mixed> $nodeTypeConfiguration
+     * @param array<mixed> $additionalProjectionFactories
+     */
     public function __construct(
         Connection $dbalConnection,
         private readonly array $dimensionConfiguration,
@@ -129,7 +133,7 @@ final class StandaloneContentRepositoryRegistry
         );
     }
 
-    private function buildNodeTypeManager()
+    private function buildNodeTypeManager(): NodeTypeManager
     {
         return new NodeTypeManager(
             fn() => $this->nodeTypeConfiguration,
