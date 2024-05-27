@@ -10,10 +10,10 @@ $contentRepository = App\Common::getContentRepository();
 $rootNodeTypeName = NodeTypeName::fromString('MyProject:Root');
 
 $bootstrapper = ContentRepositoryBootstrapper::create($contentRepository);
-$liveContentStreamId = $bootstrapper->getOrCreateLiveContentStream();
+$liveWorkspace = $bootstrapper->getOrCreateLiveWorkspace();
 echo "🟢 finished setting up live workspace / content stream\n";
 $rootNodeIdentifier = $bootstrapper->getOrCreateRootNodeAggregate(
-    $liveContentStreamId,
+    $liveWorkspace,
     $rootNodeTypeName
 );
 

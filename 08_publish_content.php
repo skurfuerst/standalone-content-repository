@@ -8,13 +8,11 @@ require __DIR__ . '/vendor/autoload.php';
 
 $contentRepository = App\Common::getContentRepository();
 
-$userWorkspace = $contentRepository->getWorkspaceFinder()->findOneByName(
-    WorkspaceName::fromString('user-sebastian')
-);
+$userWorkspaceName = WorkspaceName::fromString('user-sebastian');
 
 $contentRepository->handle(
     PublishWorkspace::create(
-        $userWorkspace->workspaceName
+        $userWorkspaceName
     )
 )->block();
 

@@ -16,15 +16,14 @@ class NodeTreePrinter
         $i = 0;
         foreach ($contentRepository->getWorkspaceFinder()->findAll() as $workspace) {
             $i++;
-            echo sprintf("📄 Workspace %s (Content Stream: %s):\n", $workspace->workspaceName->value, $workspace->currentContentStreamId->value);
-            echo "\n";
+            echo sprintf('📄 Workspace %s (Content Stream: %s):', $workspace->workspaceName->value, $workspace->currentContentStreamId->value);
+            echo "\n\n";
 
             foreach ($contentRepository->getVariationGraph()->getDimensionSpacePoints() as $dimensionSpacePoint) {
-                echo sprintf("   🏁 Dimension %s:\n", $dimensionSpacePoint->toJson());
-                echo "\n";
+                echo sprintf('   🏁 Dimension %s:', $dimensionSpacePoint->toJson());
+                echo "\n\n";
 
-                $subgraph = $contentRepository->getContentGraph()->getSubgraph(
-                    $workspace->currentContentStreamId,
+                $subgraph = $contentRepository->getContentGraph($workspace->workspaceName)->getSubgraph(
                     $dimensionSpacePoint,
                     VisibilityConstraints::frontend()
                 );
@@ -47,7 +46,7 @@ class NodeTreePrinter
         $rootNodeTypeName = NodeTypeName::fromString('MyProject:Root');
         $rootNode = $subgraph->findRootNodeByType($rootNodeTypeName);
         if (!$rootNode) {
-            echo "      ❌ no root node found";
+            echo '      ❌ no root node found';
             return;
         }
 

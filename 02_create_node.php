@@ -11,15 +11,11 @@ use Neos\ContentRepository\Core\SharedModel\Workspace\WorkspaceName;
 require __DIR__ . '/vendor/autoload.php';
 
 $contentRepository = App\Common::getContentRepository();
-$liveWorkspace = $contentRepository
-    ->getWorkspaceFinder()
-    ->findOneByName(WorkspaceName::fromString('live'));
 $rootNodeId = App\Common::getRootNodeId();
-
 
 $contentRepository->handle(
     CreateNodeAggregateWithNode::create(
-        contentStreamId: $liveWorkspace->currentContentStreamId,
+        workspaceName: WorkspaceName::forLive(),
         nodeAggregateId: NodeAggregateId::create(),
         nodeTypeName: NodeTypeName::fromString('MyProject:Page'),
         originDimensionSpacePoint: OriginDimensionSpacePoint::fromArray([]),

@@ -15,10 +15,10 @@
         }
     ],
     "require": {
-        "neos/contentrepository-core": "9.0.x-dev",
-        "neos/contentgraph-doctrinedbaladapter": "9.0.x-dev",
-        "neos/eventstore": "dev-main",
-        "neos/eventstore-doctrineadapter": "dev-main",
+        "neos/contentrepository-core": "9.0.0-beta10",
+        "neos/contentgraph-doctrinedbaladapter": "9.0.0-beta10",
+        "neos/eventstore": "~1.0.0",
+        "neos/eventstore-doctrineadapter": "~1.0.0",
         "symfony/yaml": "^6.3"
     },
     "require-dev": {
