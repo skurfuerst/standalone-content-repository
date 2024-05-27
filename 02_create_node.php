@@ -25,7 +25,7 @@ $contentRepository->handle(
 //            'description' => 'description'
         ])
     )
-)->block();
+);
 
 echo "🟢 Inserted a page\n";
 

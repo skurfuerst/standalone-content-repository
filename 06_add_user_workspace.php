@@ -26,7 +26,7 @@ $contentRepository->handle(
         workspaceDescription: WorkspaceDescription::fromString('Sebastians IPC Workspace'),
         newContentStreamId: ContentStreamId::create()
     )
-)->block();
+);
 
 echo sprintf("🟢 Created workspace\n");
 

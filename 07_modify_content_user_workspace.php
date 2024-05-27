@@ -26,7 +26,7 @@ $contentRepository->handle(
             'modificationDate' => new \DateTimeImmutable(),
         ])
     )
-)->block();
+);
 
 $contentRepository->handle(
     RemoveNodeAggregate::create(
@@ -35,7 +35,7 @@ $contentRepository->handle(
         coveredDimensionSpacePoint: DimensionSpacePoint::fromArray([]),
         nodeVariantSelectionStrategy: NodeVariantSelectionStrategy::STRATEGY_ALL_VARIANTS
     )
-)->block();
+);
 
 echo sprintf("🟢 Updated content in user workspace\n");
 

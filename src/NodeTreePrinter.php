@@ -55,9 +55,9 @@ class NodeTreePrinter
 
     private static function printChildNodes(Node $node, ContentSubgraphInterface $subgraph, int $indentation): void
     {
-        echo str_pad('', $indentation) . sprintf("%s (Type: %s) %s\n", $node->nodeAggregateId->value, $node->nodeTypeName->value, json_encode($node->properties->serialized()->getPlainValues()));
+        echo str_pad('', $indentation) . sprintf("%s (Type: %s) %s\n", $node->aggregateId->value, $node->nodeTypeName->value, json_encode($node->properties->serialized()->getPlainValues()));
 
-        foreach ($subgraph->findChildNodes($node->nodeAggregateId, FindChildNodesFilter::create()) as $childNode) {
+        foreach ($subgraph->findChildNodes($node->aggregateId, FindChildNodesFilter::create()) as $childNode) {
             self::printChildNodes($childNode, $subgraph, $indentation + 3);
         }
     }

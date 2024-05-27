@@ -28,7 +28,7 @@ $contentRepository->handle(
 //            'description' => 'description'
         ])
     )
-)->block();
+);
 
 echo "🟢 Inserted a page\n";
 
@@ -42,7 +42,7 @@ $contentRepository->handle(
             'creationDate' => new \DateTimeImmutable(),
         ])
     )
-)->block();
+);
 
 echo "🟢 Modified properties\n";
 

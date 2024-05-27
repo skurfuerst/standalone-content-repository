@@ -14,7 +14,7 @@ $contentRepository->handle(
     PublishWorkspace::create(
         $userWorkspaceName
     )
-)->block();
+);
 
 echo sprintf("🟢 Published content from user-sebastian -> live\n");
 
