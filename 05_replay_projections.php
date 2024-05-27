@@ -12,13 +12,13 @@ $contentRepository = App\Common::getContentRepository();
 $contentRepository->resetProjectionStates();
 
 $options = CatchUpOptions::create(
-    maximumSequenceNumber: 4
+    maximumSequenceNumber: $maximumSequenceNumber = 4
 );
 $contentRepository->catchUpProjection(ContentGraphProjection::class, $options);
 $contentRepository->catchUpProjection(WorkspaceProjection::class, $options);
 $contentRepository->catchUpProjection(ContentStreamProjection::class, $options);
 
-echo sprintf("🟢 Replayed projection state up to sequence number %d\n", $options->maximumSequenceNumber->value);
+echo sprintf("🟢 Replayed projection state up to sequence number %d\n", $maximumSequenceNumber);
 
 NodeTreePrinter::print($contentRepository);
 
