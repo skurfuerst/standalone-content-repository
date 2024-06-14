@@ -4,8 +4,8 @@ namespace App;
 
 use Doctrine\DBAL\DriverManager;
 use Neos\ContentRepository\Core\ContentRepository;
-use Neos\ContentRepository\Core\Factory\ContentRepositoryId;
 use Neos\ContentRepository\Core\NodeType\NodeTypeName;
+use Neos\ContentRepository\Core\SharedModel\ContentRepository\ContentRepositoryId;
 use Neos\ContentRepository\Core\SharedModel\Node\NodeAggregateId;
 use Neos\ContentRepository\Core\SharedModel\Workspace\WorkspaceName;
 use Symfony\Component\Yaml\Yaml;
@@ -40,7 +40,7 @@ class Common
             self::$registry = new \App\StandaloneContentRepositoryRegistry(
                 self::getConnection(),
                 dimensionConfiguration: [],
-                nodeTypeConfiguration: Yaml::parse(file_get_contents('NodeTypes.yaml')),
+                nodeTypeConfiguration: Yaml::parse(file_get_contents('NodeTypes.yaml') ?: throw new \RuntimeException('Failed to read NodeType schema.')),
                 additionalProjectionFactories: []
             );
 
@@ -55,13 +55,10 @@ class Common
     public static function getRootNodeId(): NodeAggregateId
     {
         $contentRepository = self::getContentRepository();
-        $liveWorkspace = $contentRepository->getWorkspaceFinder()->findOneByName(WorkspaceName::fromString('live'));
         $rootNodeTypeName = NodeTypeName::fromString('MyProject:Root');
 
-        $rootNodeAggregate = $contentRepository->getContentGraph()->findRootNodeAggregateByType(
-            $liveWorkspace->currentContentStreamId,
-            $rootNodeTypeName
-        );
+        $liveContentGraph = $contentRepository->getContentGraph(WorkspaceName::forLive());
+        $rootNodeAggregate = $liveContentGraph->findRootNodeAggregateByType($rootNodeTypeName);
         return $rootNodeAggregate->nodeAggregateId;
     }
 }

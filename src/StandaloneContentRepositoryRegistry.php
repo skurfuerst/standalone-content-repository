@@ -9,7 +9,6 @@ use Neos\ContentRepository\Core\ContentRepository;
 use Neos\ContentRepository\Core\Dimension\ConfigurationBasedContentDimensionSource;
 use Neos\ContentRepository\Core\Dimension\ContentDimensionSourceInterface;
 use Neos\ContentRepository\Core\Factory\ContentRepositoryFactory;
-use Neos\ContentRepository\Core\Factory\ContentRepositoryId;
 use Neos\ContentRepository\Core\Factory\ContentRepositoryServiceFactoryInterface;
 use Neos\ContentRepository\Core\Factory\ContentRepositoryServiceInterface;
 use Neos\ContentRepository\Core\Factory\ProjectionsAndCatchUpHooksFactory;
@@ -23,13 +22,13 @@ use Neos\ContentRepository\Core\Infrastructure\Property\Normalizer\ValueObjectBo
 use Neos\ContentRepository\Core\Infrastructure\Property\Normalizer\ValueObjectFloatDenormalizer;
 use Neos\ContentRepository\Core\Infrastructure\Property\Normalizer\ValueObjectIntDenormalizer;
 use Neos\ContentRepository\Core\Infrastructure\Property\Normalizer\ValueObjectStringDenormalizer as ValueObjectStringDenormalizerAlias;
-use Neos\ContentRepository\Core\NodeType\DefaultNodeLabelGeneratorFactory;
 use Neos\ContentRepository\Core\NodeType\NodeTypeManager;
 use Neos\ContentRepository\Core\Projection\CatchUpOptions;
 use Neos\ContentRepository\Core\Projection\ContentStream\ContentStreamProjectionFactory;
 use Neos\ContentRepository\Core\Projection\ProjectionCatchUpTriggerInterface;
 use Neos\ContentRepository\Core\Projection\Projections;
 use Neos\ContentRepository\Core\Projection\Workspace\WorkspaceProjectionFactory;
+use Neos\ContentRepository\Core\SharedModel\ContentRepository\ContentRepositoryId;
 use Neos\ContentRepository\Core\SharedModel\User\UserId;
 use Neos\ContentRepository\Core\SharedModel\User\UserIdProviderInterface;
 use Neos\EventStore\DoctrineAdapter\DoctrineEventStore;
@@ -56,7 +55,11 @@ final class StandaloneContentRepositoryRegistry
 
     private DbalClientInterface $dbalClient;
 
-
+    /**
+     * @param array<mixed> $dimensionConfiguration
+     * @param array<mixed> $nodeTypeConfiguration
+     * @param array<mixed> $additionalProjectionFactories
+     */
     public function __construct(
         Connection $dbalConnection,
         private readonly array $dimensionConfiguration,
@@ -129,11 +132,10 @@ final class StandaloneContentRepositoryRegistry
         );
     }
 
-    private function buildNodeTypeManager()
+    private function buildNodeTypeManager(): NodeTypeManager
     {
         return new NodeTypeManager(
-            fn() => $this->nodeTypeConfiguration,
-            new DefaultNodeLabelGeneratorFactory()
+            fn() => $this->nodeTypeConfiguration
         );
     }
 
