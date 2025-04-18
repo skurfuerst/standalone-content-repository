@@ -28,15 +28,9 @@ $contentRepository->handle(
     )
 );
 
-$contentRepository->handle(
-    RemoveNodeAggregate::create(
-        workspaceName: $userWorkspaceName,
-        nodeAggregateId: NodeAggregateId::fromString('1330cb65-5b57-4a10-9c53-1408b381eea7'),
-        coveredDimensionSpacePoint: DimensionSpacePoint::fromArray([]),
-        nodeVariantSelectionStrategy: NodeVariantSelectionStrategy::STRATEGY_ALL_VARIANTS
-    )
-);
+
 
 echo sprintf("🟢 Updated content in user workspace\n");
 
 NodeTreePrinter::print($contentRepository);
+

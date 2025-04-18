@@ -12,7 +12,7 @@ use Neos\ContentRepository\Core\SharedModel\Workspace\WorkspaceName;
 require __DIR__ . '/vendor/autoload.php';
 
 $contentRepository = App\Common::getContentRepository();
-$rootNodeId = App\Common::getRootNodeId();
+$rootNodeId = NodeAggregateId::fromString('norman-nodely-van-rootford');
 
 $nodeId1 = NodeAggregateId::create();
 
