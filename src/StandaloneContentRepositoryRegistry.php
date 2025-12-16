@@ -8,11 +8,15 @@ use Neos\ContentGraph\DoctrineDbalAdapter\DoctrineDbalContentGraphProjectionFact
 use Neos\ContentRepository\Core\ContentRepository;
 use Neos\ContentRepository\Core\Dimension\ConfigurationBasedContentDimensionSource;
 use Neos\ContentRepository\Core\Dimension\ContentDimensionSourceInterface;
+use Neos\ContentRepository\Core\Factory\AuthProviderFactoryInterface;
+use Neos\ContentRepository\Core\Factory\CommandHooksFactory;
 use Neos\ContentRepository\Core\Factory\ContentRepositoryFactory;
 use Neos\ContentRepository\Core\Factory\ContentRepositoryServiceFactoryInterface;
 use Neos\ContentRepository\Core\Factory\ContentRepositoryServiceInterface;
-use Neos\ContentRepository\Core\Factory\ProjectionsAndCatchUpHooksFactory;
-use Neos\ContentRepository\Core\Infrastructure\DbalClientInterface;
+use Neos\ContentRepository\Core\Factory\ContentRepositorySubscriberFactories;
+use Neos\ContentRepository\Core\Feature\Security\AuthProviderInterface;
+use Neos\ContentRepository\Core\Feature\Security\Dto\UserId;
+use Neos\ContentRepository\Core\Feature\Security\StaticAuthProvider;
 use Neos\ContentRepository\Core\Infrastructure\Property\Normalizer\ArrayNormalizer;
 use Neos\ContentRepository\Core\Infrastructure\Property\Normalizer\CollectionTypeDenormalizer;
 use Neos\ContentRepository\Core\Infrastructure\Property\Normalizer\ScalarNormalizer;
@@ -23,14 +27,11 @@ use Neos\ContentRepository\Core\Infrastructure\Property\Normalizer\ValueObjectFl
 use Neos\ContentRepository\Core\Infrastructure\Property\Normalizer\ValueObjectIntDenormalizer;
 use Neos\ContentRepository\Core\Infrastructure\Property\Normalizer\ValueObjectStringDenormalizer as ValueObjectStringDenormalizerAlias;
 use Neos\ContentRepository\Core\NodeType\NodeTypeManager;
-use Neos\ContentRepository\Core\Projection\CatchUpOptions;
-use Neos\ContentRepository\Core\Projection\ContentStream\ContentStreamProjectionFactory;
-use Neos\ContentRepository\Core\Projection\ProjectionCatchUpTriggerInterface;
-use Neos\ContentRepository\Core\Projection\Projections;
-use Neos\ContentRepository\Core\Projection\Workspace\WorkspaceProjectionFactory;
+use Neos\ContentRepository\Core\Projection\ContentGraph\ContentGraphProjectionFactoryInterface;
+use Neos\ContentRepository\Core\Projection\ContentGraph\ContentGraphReadModelInterface;
 use Neos\ContentRepository\Core\SharedModel\ContentRepository\ContentRepositoryId;
-use Neos\ContentRepository\Core\SharedModel\User\UserId;
-use Neos\ContentRepository\Core\SharedModel\User\UserIdProviderInterface;
+use Neos\ContentRepository\Core\Subscription\Store\SubscriptionStoreInterface;
+use Neos\ContentRepository\Dbal\SubscriptionStore\DoctrineSubscriptionStore;
 use Neos\EventStore\DoctrineAdapter\DoctrineEventStore;
 use Neos\EventStore\EventStoreInterface;
 use Psr\Clock\ClockInterface;
@@ -53,32 +54,15 @@ final class StandaloneContentRepositoryRegistry
      */
     private array $factoryInstances = [];
 
-    private DbalClientInterface $dbalClient;
-
     /**
      * @param array<mixed> $dimensionConfiguration
      * @param array<mixed> $nodeTypeConfiguration
-     * @param array<mixed> $additionalProjectionFactories
      */
     public function __construct(
-        Connection $dbalConnection,
+        private readonly Connection $dbalConnection,
         private readonly array $dimensionConfiguration,
         private readonly array $nodeTypeConfiguration,
-        private readonly array $additionalProjectionFactories,
     ) {
-
-        $this->dbalClient = new class($dbalConnection) implements DbalClientInterface {
-            public function __construct(
-                private readonly Connection $dbalConnection
-            ) {
-            }
-
-            public function getConnection(): \Doctrine\DBAL\Connection
-            {
-                return $this->dbalConnection;
-            }
-        };
-
     }
 
     public function get(ContentRepositoryId $contentRepositoryId): ContentRepository
@@ -111,31 +95,47 @@ final class StandaloneContentRepositoryRegistry
     {
         $clock = $this->buildClock();
         return new ContentRepositoryFactory(
-            $contentRepositoryId,
-            $this->buildEventStore($contentRepositoryId, $clock),
-            $this->buildNodeTypeManager(),
-            $this->buildContentDimensionSource(),
-            $this->buildPropertySerializer(),
-            $this->buildProjectionsFactory(),
-            $this->buildProjectionCatchUpTrigger($contentRepositoryId),
-            $this->buildUserIdProvider(),
-            $clock,
+            contentRepositoryId: $contentRepositoryId,
+            eventStore: $this->buildEventStore($contentRepositoryId, $clock),
+            nodeTypeManager: $this->buildNodeTypeManager(),
+            contentDimensionSource: $this->buildContentDimensionSource(),
+            propertySerializer: $this->buildPropertySerializer(),
+            authProviderFactory: $this->buildAuthProviderFactory(),
+            clock: $clock,
+            subscriptionStore: $this->buildSubscriptionStore($contentRepositoryId, $clock),
+            contentGraphProjectionFactory: $this->buildContentGraphProjectionFactory(),
+            contentGraphCatchUpHookFactory: null,
+            commandHooksFactory: new CommandHooksFactory(),
+            additionalSubscriberFactories: ContentRepositorySubscriberFactories::createEmpty(),
+            logger: null
         );
     }
 
     private function buildEventStore(ContentRepositoryId $contentRepositoryId, ClockInterface $clock): EventStoreInterface
     {
         return new DoctrineEventStore(
-            $this->dbalClient->getConnection(),
+            $this->dbalConnection,
             'cr_' . $contentRepositoryId->value . '_events',
             $clock
         );
     }
 
+    private function buildSubscriptionStore(ContentRepositoryId $contentRepositoryId, ClockInterface $clock): SubscriptionStoreInterface
+    {
+        return new DoctrineSubscriptionStore(sprintf('cr_%s_subscriptions', $contentRepositoryId->value), $this->dbalConnection, $clock);
+    }
+
+    private function buildContentGraphProjectionFactory(): ContentGraphProjectionFactoryInterface
+    {
+        return new DoctrineDbalContentGraphProjectionFactory(
+            $this->dbalConnection
+        );
+    }
+
     private function buildNodeTypeManager(): NodeTypeManager
     {
-        return new NodeTypeManager(
-            fn() => $this->nodeTypeConfiguration
+        return NodeTypeManager::createFromArrayConfiguration(
+            $this->nodeTypeConfiguration
         );
     }
 
@@ -164,49 +164,16 @@ final class StandaloneContentRepositoryRegistry
         return new Serializer($normalizers);
     }
 
-    private function buildProjectionsFactory(): ProjectionsAndCatchUpHooksFactory
+    private function buildAuthProviderFactory(): AuthProviderFactoryInterface
     {
-        $projectionsFactory = new ProjectionsAndCatchUpHooksFactory();
-        $projectionsFactory->registerFactory(new DoctrineDbalContentGraphProjectionFactory($this->dbalClient), []);
-        $projectionsFactory->registerFactory(new WorkspaceProjectionFactory($this->dbalClient), []);
-        $projectionsFactory->registerFactory(new ContentStreamProjectionFactory($this->dbalClient), []);
-
-        foreach ($this->additionalProjectionFactories as $projectionFactory) {
-            $projectionsFactory->registerFactory($projectionFactory, []);
-        }
-
-        return $projectionsFactory;
-    }
-
-    private function buildProjectionCatchUpTrigger(ContentRepositoryId $contentRepositoryId): ProjectionCatchUpTriggerInterface
-    {
-        return new class($this, $contentRepositoryId) implements ProjectionCatchUpTriggerInterface {
-            public function __construct(
-                private readonly StandaloneContentRepositoryRegistry $registry,
-                private readonly ContentRepositoryId $contentRepositoryId,
-            ) {
-            }
-
-            public function triggerCatchUp(Projections $projections): void
+        // todo add default implementation like this to the core
+        return new class implements AuthProviderFactoryInterface
+        {
+            public function build(ContentRepositoryId $contentRepositoryId, ContentGraphReadModelInterface $contentGraphReadModel): AuthProviderInterface
             {
-                $contentRepository = $this->registry->get($this->contentRepositoryId);
-                foreach ($projections as $projection) {
-                    $projectionClassName = get_class($projection);
-                    $contentRepository->catchUpProjection($projectionClassName, CatchUpOptions::create());
-                }
+                return new StaticAuthProvider(UserId::forSystemUser());
             }
         };
-    }
-
-    private function buildUserIdProvider(): UserIdProviderInterface
-    {
-        return new class implements UserIdProviderInterface {
-            public function getUserId(): UserId
-            {
-                return UserId::fromString('system');
-            }
-        };
-
     }
 
     private function buildClock(): ClockInterface

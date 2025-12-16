@@ -11,12 +11,12 @@ use Neos\ContentRepository\Core\SharedModel\Workspace\WorkspaceName;
 require __DIR__ . '/vendor/autoload.php';
 
 $contentRepository = App\Common::getContentRepository();
-$rootNodeId = App\Common::getRootNodeId();
+$rootNodeId = NodeAggregateId::fromString('norman-nodely-van-rootford');
 
 $contentRepository->handle(
     CreateNodeAggregateWithNode::create(
         workspaceName: WorkspaceName::forLive(),
-        nodeAggregateId: NodeAggregateId::create(),
+        nodeAggregateId: NodeAggregateId::fromString('d022c323-75e5-4628-9526-d6f085b7b662'),
         nodeTypeName: NodeTypeName::fromString('MyProject:Page'),
         originDimensionSpacePoint: OriginDimensionSpacePoint::fromArray([]),
         parentNodeAggregateId: $rootNodeId,

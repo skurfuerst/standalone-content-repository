@@ -2,29 +2,29 @@
 
 namespace App;
 
+use Doctrine\DBAL\Connection;
 use Doctrine\DBAL\DriverManager;
 use Neos\ContentRepository\Core\ContentRepository;
-use Neos\ContentRepository\Core\NodeType\NodeTypeName;
+use Neos\ContentRepository\Core\Service\ContentRepositoryMaintainer;
+use Neos\ContentRepository\Core\Service\ContentRepositoryMaintainerFactory;
 use Neos\ContentRepository\Core\SharedModel\ContentRepository\ContentRepositoryId;
-use Neos\ContentRepository\Core\SharedModel\Node\NodeAggregateId;
-use Neos\ContentRepository\Core\SharedModel\Workspace\WorkspaceName;
 use Symfony\Component\Yaml\Yaml;
 
 class Common
 {
-    private static ?\Doctrine\DBAL\Connection $connection = null;
+    private static ?Connection $connection = null;
     private static ?StandaloneContentRepositoryRegistry $registry = null;
 
-    public static function getConnection(): \Doctrine\DBAL\Connection
+    public static function getConnection(): Connection
     {
         if (!self::$connection) {
             $connectionParams = [
-                'dbname' => 'db',
-                'user' => 'db',
-                'password' => 'db',
+                'dbname' => 'cr-stand-alone',
+                'user' => 'neos',
+                'password' => '123456',
                 'host' => '127.0.0.1',
                 'driver' => 'pdo_mysql',
-                'port' => '23306'
+                'port' => 3306
             ];
 
             self::$connection = DriverManager::getConnection($connectionParams);
@@ -36,29 +36,24 @@ class Common
 
     public static function getContentRepository(): ContentRepository
     {
-        if (!self::$registry) {
-            self::$registry = new \App\StandaloneContentRepositoryRegistry(
-                self::getConnection(),
-                dimensionConfiguration: [],
-                nodeTypeConfiguration: Yaml::parse(file_get_contents('NodeTypes.yaml') ?: throw new \RuntimeException('Failed to read NodeType schema.')),
-                additionalProjectionFactories: []
-            );
+        $registry = self::getContentRepositoryRegistry();
 
-        }
-
-        $contentRepository = self::$registry->get(ContentRepositoryId::fromString('default'));
-        $contentRepository->setUp();
-
-        return $contentRepository;
+        return $registry->get(ContentRepositoryId::fromString('default'));
     }
 
-    public static function getRootNodeId(): NodeAggregateId
+    public static function getContentRepositoryMaintainer(): ContentRepositoryMaintainer
     {
-        $contentRepository = self::getContentRepository();
-        $rootNodeTypeName = NodeTypeName::fromString('MyProject:Root');
+        $registry = self::getContentRepositoryRegistry();
 
-        $liveContentGraph = $contentRepository->getContentGraph(WorkspaceName::forLive());
-        $rootNodeAggregate = $liveContentGraph->findRootNodeAggregateByType($rootNodeTypeName);
-        return $rootNodeAggregate->nodeAggregateId;
+        return $registry->buildService(ContentRepositoryId::fromString('default'), new ContentRepositoryMaintainerFactory());
+    }
+
+    private static function getContentRepositoryRegistry(): StandaloneContentRepositoryRegistry
+    {
+        return self::$registry ??= new \App\StandaloneContentRepositoryRegistry(
+            self::getConnection(),
+            dimensionConfiguration: [],
+            nodeTypeConfiguration: Yaml::parse(file_get_contents('NodeTypes.yaml') ?: throw new \RuntimeException('Failed to read NodeType schema.')),
+        );
     }
 }

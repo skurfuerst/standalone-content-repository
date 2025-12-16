@@ -14,7 +14,7 @@ class NodeTreePrinter
     public static function print(ContentRepository $contentRepository): void
     {
         $i = 0;
-        foreach ($contentRepository->getWorkspaceFinder()->findAll() as $workspace) {
+        foreach ($contentRepository->findWorkspaces() as $workspace) {
             $i++;
             echo sprintf('📄 Workspace %s (Content Stream: %s):', $workspace->workspaceName->value, $workspace->currentContentStreamId->value);
             echo "\n\n";
@@ -25,7 +25,7 @@ class NodeTreePrinter
 
                 $subgraph = $contentRepository->getContentGraph($workspace->workspaceName)->getSubgraph(
                     $dimensionSpacePoint,
-                    VisibilityConstraints::frontend()
+                    VisibilityConstraints::createEmpty()
                 );
 
                 self::printSubgraph($subgraph);
