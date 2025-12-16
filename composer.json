@@ -17,7 +17,6 @@
     "require": {
         "neos/contentrepository-core": "~9.0",
         "neos/contentgraph-doctrinedbaladapter": "~9.0",
-        "neos/contentrepositoryregistry": "~9.0",
         "symfony/yaml": "^6.3"
     },
     "require-dev": {

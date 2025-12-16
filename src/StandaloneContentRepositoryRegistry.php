@@ -8,6 +8,7 @@ use Neos\ContentGraph\DoctrineDbalAdapter\DoctrineDbalContentGraphProjectionFact
 use Neos\ContentRepository\Core\ContentRepository;
 use Neos\ContentRepository\Core\Dimension\ConfigurationBasedContentDimensionSource;
 use Neos\ContentRepository\Core\Dimension\ContentDimensionSourceInterface;
+use Neos\ContentRepository\Core\Factory\AuthProviderFactoryInterface;
 use Neos\ContentRepository\Core\Factory\CommandHooksFactory;
 use Neos\ContentRepository\Core\Factory\ContentRepositoryFactory;
 use Neos\ContentRepository\Core\Factory\ContentRepositoryServiceFactoryInterface;
@@ -30,7 +31,7 @@ use Neos\ContentRepository\Core\Projection\ContentGraph\ContentGraphProjectionFa
 use Neos\ContentRepository\Core\Projection\ContentGraph\ContentGraphReadModelInterface;
 use Neos\ContentRepository\Core\SharedModel\ContentRepository\ContentRepositoryId;
 use Neos\ContentRepository\Core\Subscription\Store\SubscriptionStoreInterface;
-use Neos\ContentRepositoryRegistry\Factory\SubscriptionStore\DoctrineSubscriptionStore;
+use Neos\ContentRepository\Dbal\SubscriptionStore\DoctrineSubscriptionStore;
 use Neos\EventStore\DoctrineAdapter\DoctrineEventStore;
 use Neos\EventStore\EventStoreInterface;
 use Psr\Clock\ClockInterface;
@@ -121,7 +122,6 @@ final class StandaloneContentRepositoryRegistry
 
     private function buildSubscriptionStore(ContentRepositoryId $contentRepositoryId, ClockInterface $clock): SubscriptionStoreInterface
     {
-        // todo we need to install neos/contentrepositoryregistry because it contains the DoctrineSubscriptionStore implementation, this should be extracted into an own package instead to be shared for mysql and postgresql
         return new DoctrineSubscriptionStore(sprintf('cr_%s_subscriptions', $contentRepositoryId->value), $this->dbalConnection, $clock);
     }
 
@@ -164,10 +164,10 @@ final class StandaloneContentRepositoryRegistry
         return new Serializer($normalizers);
     }
 
-    private function buildAuthProviderFactory(): \Neos\ContentRepositoryRegistry\Factory\AuthProvider\AuthProviderFactoryInterface
+    private function buildAuthProviderFactory(): AuthProviderFactoryInterface
     {
-        // todo we need to install neos/contentrepositoryregistry because it contains this interface due to an hiccup: https://github.com/neos/neos-development-collection/pull/5547
-        return new class implements \Neos\ContentRepositoryRegistry\Factory\AuthProvider\AuthProviderFactoryInterface
+        // todo add default implementation like this to the core
+        return new class implements AuthProviderFactoryInterface
         {
             public function build(ContentRepositoryId $contentRepositoryId, ContentGraphReadModelInterface $contentGraphReadModel): AuthProviderInterface
             {
